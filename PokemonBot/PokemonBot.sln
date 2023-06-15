@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBot", "PokemonBot\PokemonBot.csproj", "{3DDD329E-0CD4-4349-8DEC-59BD235207C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBot.Models", "PokemonBot.Models\PokemonBot.Models.csproj", "{463D7678-9CCB-436D-9020-B9353BAF7FBE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DDD329E-0CD4-4349-8DEC-59BD235207C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DDD329E-0CD4-4349-8DEC-59BD235207C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DDD329E-0CD4-4349-8DEC-59BD235207C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DDD329E-0CD4-4349-8DEC-59BD235207C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{463D7678-9CCB-436D-9020-B9353BAF7FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{463D7678-9CCB-436D-9020-B9353BAF7FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{463D7678-9CCB-436D-9020-B9353BAF7FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{463D7678-9CCB-436D-9020-B9353BAF7FBE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29E66B7E-DEF4-4C9A-8CF4-927C5E48D52B}
+	EndGlobalSection
+EndGlobal
