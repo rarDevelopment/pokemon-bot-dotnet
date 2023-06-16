@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBot", "PokemonBot\PokemonBot.csproj", "{3DDD329E-0CD4-4349-8DEC-59BD235207C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBot", "PokemonBot\PokemonBot.csproj", "{3DDD329E-0CD4-4349-8DEC-59BD235207C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBot.Models", "PokemonBot.Models\PokemonBot.Models.csproj", "{463D7678-9CCB-436D-9020-B9353BAF7FBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBot.Models", "PokemonBot.Models\PokemonBot.Models.csproj", "{463D7678-9CCB-436D-9020-B9353BAF7FBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBot.BusinessLayer", "PokemonBot.BusinessLayer\PokemonBot.BusinessLayer.csproj", "{16E0B610-2888-4769-86B1-426A6A889EA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBot.ServiceLayer", "PokemonBot.ServiceLayer\PokemonBot.ServiceLayer.csproj", "{70E3B0B3-84E9-4310-91E5-135D320DBF5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{463D7678-9CCB-436D-9020-B9353BAF7FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{463D7678-9CCB-436D-9020-B9353BAF7FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{463D7678-9CCB-436D-9020-B9353BAF7FBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16E0B610-2888-4769-86B1-426A6A889EA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16E0B610-2888-4769-86B1-426A6A889EA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16E0B610-2888-4769-86B1-426A6A889EA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16E0B610-2888-4769-86B1-426A6A889EA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70E3B0B3-84E9-4310-91E5-135D320DBF5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70E3B0B3-84E9-4310-91E5-135D320DBF5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70E3B0B3-84E9-4310-91E5-135D320DBF5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70E3B0B3-84E9-4310-91E5-135D320DBF5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

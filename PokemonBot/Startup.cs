@@ -12,6 +12,8 @@ using PokemonBot;
 using PokemonBot.Models;
 using Serilog;
 using System.Reflection;
+using PokemonBot.BusinessLayer;
+using PokemonBot.ServiceLayer;
 
 var builder = new HostBuilder();
 
@@ -48,6 +50,8 @@ builder.ConfigureServices((host, services) =>
     services.AddSingleton(versionSettings);
 
     services.AddScoped<IDiscordFormatter, DiscordFormatter>();
+    services.AddScoped<IPokemonBusinessLayer, PokemonBusinessLayer>();
+    services.AddScoped<IPokeApiServiceLayer, PokeApiServiceLayer>();
 
     services.AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()));
 
