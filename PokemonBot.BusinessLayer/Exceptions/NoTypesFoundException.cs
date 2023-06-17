@@ -11,7 +11,7 @@ public class NoTypesFoundException : Exception
         PokemonSearched = pokemon;
     }
 
-    public string Identifier { get; set; }
+    public string Identifier { get; }
 
-    public Pokemon PokemonSearched { get; set; }
+    public Pokemon PokemonSearched { get; }
 }

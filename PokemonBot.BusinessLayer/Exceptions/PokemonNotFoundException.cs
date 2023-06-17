@@ -7,5 +7,5 @@ public class PokemonNotFoundException : Exception
         Identifier = identifier;
     }
 
-    public string Identifier { get; set; }
+    public string Identifier { get; }
 }

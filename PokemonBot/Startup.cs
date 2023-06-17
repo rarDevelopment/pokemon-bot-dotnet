@@ -46,14 +46,18 @@ builder.ConfigureServices((host, services) =>
     var versionSettings = new VersionSettings(host.Configuration["Version:VersionNumber"]!);
     var botSettings = new BotSettings(host.Configuration["Bot:MissingnoImageUrl"]!, host.Configuration["Bot:GhostUrl"]!,
     host.Configuration["Bot:HelpImage"]!, Convert.ToInt32(host.Configuration["Bot:TotalPokemon"]!));
+    var pokemonTcgSettings = new PokemonTcgSettings(host.Configuration["PokemonTcg:ApiKey"]!);
 
     services.AddSingleton(discordSettings);
     services.AddSingleton(versionSettings);
     services.AddSingleton(botSettings);
+    services.AddSingleton(pokemonTcgSettings);
 
     services.AddScoped<IDiscordFormatter, DiscordFormatter>();
     services.AddScoped<IPokemonBusinessLayer, PokemonBusinessLayer>();
     services.AddScoped<IPokeApiServiceLayer, PokeApiServiceLayer>();
+    services.AddScoped<IPokemonTcgBusinessLayer, PokemonTcgBusinessLayer>();
+    services.AddScoped<IPokemonTcgServiceLayer, PokemonTcgServiceLayer>();
 
     services.AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()));
 
