@@ -10,4 +10,8 @@
     <PackageReference Include="PokeApiNet" Version="3.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PokemonBot.Models\PokemonBot.Models.csproj" />
+  </ItemGroup>
+
 </Project>
