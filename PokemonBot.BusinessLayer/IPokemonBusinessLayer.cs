@@ -4,5 +4,5 @@ namespace PokemonBot.BusinessLayer;
 
 public interface IPokemonBusinessLayer
 {
-    Task<PokemonDetail> GetPokemon(string identifier);
+    Task<PokemonDetail?> GetPokemon(string identifier);
 }

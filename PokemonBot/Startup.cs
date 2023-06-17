@@ -5,7 +5,6 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Logging;
 using DiscordDotNetUtilities;
 using DiscordDotNetUtilities.Interfaces;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PokemonBot;
@@ -45,9 +44,12 @@ builder.ConfigureServices((host, services) =>
 
     var discordSettings = new DiscordSettings(host.Configuration["Discord:BotToken"]!);
     var versionSettings = new VersionSettings(host.Configuration["Version:VersionNumber"]!);
+    var botSettings = new BotSettings(host.Configuration["Bot:MissingnoImageUrl"]!, host.Configuration["Bot:GhostUrl"]!,
+    host.Configuration["Bot:HelpImage"]!, Convert.ToInt32(host.Configuration["Bot:TotalPokemon"]!));
 
     services.AddSingleton(discordSettings);
     services.AddSingleton(versionSettings);
+    services.AddSingleton(botSettings);
 
     services.AddScoped<IDiscordFormatter, DiscordFormatter>();
     services.AddScoped<IPokemonBusinessLayer, PokemonBusinessLayer>();
@@ -57,7 +59,7 @@ builder.ConfigureServices((host, services) =>
 
     services.AddSingleton<InteractionHandler>();
 
-    services.AddMediatR(typeof(DiscordBot));
+    services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DiscordBot).GetTypeInfo().Assembly));
 
     services.AddHostedService<DiscordBot>();
 });
