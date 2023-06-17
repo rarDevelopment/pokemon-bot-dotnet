@@ -10,12 +10,17 @@ public class PokemonCommand : InteractionModuleBase<SocketInteractionContext>
     private readonly IPokemonBusinessLayer _pokemonBusinessLayer;
     private readonly IDiscordFormatter _discordFormatter;
     private readonly BotSettings _botSettings;
+    private readonly ILogger<DiscordBot> _logger;
 
-    public PokemonCommand(IPokemonBusinessLayer pokemonBusinessLayer, IDiscordFormatter discordFormatter, BotSettings botSettings)
+    public PokemonCommand(IPokemonBusinessLayer pokemonBusinessLayer,
+        IDiscordFormatter discordFormatter,
+        BotSettings botSettings,
+        ILogger<DiscordBot> logger)
     {
         _pokemonBusinessLayer = pokemonBusinessLayer;
         _discordFormatter = discordFormatter;
         _botSettings = botSettings;
+        _logger = logger;
     }
 
     [SlashCommand("pokemon", "Get a Pokémon by specifying their number, name, or neither to get a random Pokémon.")]
@@ -42,7 +47,8 @@ public class PokemonCommand : InteractionModuleBase<SocketInteractionContext>
                 new()
                 {
                     Name = $"Type{(pokemon.Types.Count > 1 ? "s" : "")}",
-                    Value = string.Join(", ", pokemon.Types.Select(t => t.ToTitleCase())), IsInline = false
+                    Value = string.Join(", ", pokemon.Types.Select(t => t.ToTitleCase())),
+                    IsInline = false
                 },
                 new() { Name = "Category", Value = pokemon.Genera, IsInline = true },
                 new()
@@ -119,13 +125,20 @@ public class PokemonCommand : InteractionModuleBase<SocketInteractionContext>
         {
             await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Types Not Found",
                 $"The types were not found for the Pokémon {ex.PokemonSearched.Name} with identifier {ex.Identifier}",
-                Context.User, imageUrl: _botSettings.GhostUrl));
+                Context.User, imageUrl: _botSettings.MissingnoImageUrl));
         }
         catch (GenerationNotFoundException ex)
         {
             await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Generation Not Found",
                 $"No generation was found with the identifier {ex.Identifier}",
                 Context.User, imageUrl: _botSettings.MissingnoImageUrl));
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, $"Pokémon Command Failed: {ex.Message}", ex);
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Error",
+                $"There was an unhandled error. Please try again.",
+                Context.User, imageUrl: _botSettings.GhostUrl));
         }
     }
 }

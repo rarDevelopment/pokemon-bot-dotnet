@@ -74,6 +74,26 @@ public class PokemonBusinessLayer : IPokemonBusinessLayer
         };
     }
 
+    public async Task<TypeDetail> GetType(string typeName)
+    {
+        var type = await _pokeApiServiceLayer.GetType(typeName);
+        if (type == null)
+        {
+            throw new TypeNotFoundException(typeName);
+        }
+
+        return new TypeDetail
+        {
+            Name = type.Name,
+            DoubleDamageFrom = type.DamageRelations.DoubleDamageFrom.Select(t => t.Name),
+            HalfDamageFrom = type.DamageRelations.HalfDamageFrom.Select(t => t.Name),
+            NoDamageFrom = type.DamageRelations.NoDamageFrom.Select(t => t.Name),
+            DoubleDamageTo = type.DamageRelations.DoubleDamageTo.Select(t => t.Name),
+            HalfDamageTo = type.DamageRelations.HalfDamageTo.Select(t => t.Name),
+            NoDamageTo = type.DamageRelations.NoDamageTo.Select(t => t.Name),
+        };
+    }
+
     private async Task<IReadOnlyList<Type>> GetTypes(Pokemon pokemon)
     {
         var types = new List<Type>();
