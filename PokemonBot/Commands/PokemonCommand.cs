@@ -90,7 +90,7 @@ public class PokemonCommand : InteractionModuleBase<SocketInteractionContext>
                 new()
                 {
                     Name = "First Appearance",
-                    Value = pokemon.Generation.CleanVersionName(),
+                    Value = pokemon.Generation.CleanGenerationName(),
                     IsInline = false,
                 },
                 new()

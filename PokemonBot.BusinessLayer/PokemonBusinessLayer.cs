@@ -119,6 +119,11 @@ public class PokemonBusinessLayer : IPokemonBusinessLayer
         var identifierCleaned = identifier.Trim().ToLower();
         var identifierWithoutSpaces = identifierCleaned.Replace(" ", "");
 
+        if (int.TryParse(identifierWithoutSpaces, out int id))
+        {
+            return id.ToString();
+        }
+
         if (identifierWithoutSpaces == "nidoran♀️" || identifierWithoutSpaces == "nidoran\u2640")
         {
             return "nidoran-f";
