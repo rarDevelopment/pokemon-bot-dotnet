@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="PokeApiNet" Version="3.0.10" />
+    <PackageReference Include="PokemonTcgSdk" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>

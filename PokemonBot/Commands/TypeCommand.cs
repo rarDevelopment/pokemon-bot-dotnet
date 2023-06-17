@@ -31,7 +31,7 @@ public class TypeCommand : InteractionModuleBase<SocketInteractionContext>
 
         try
         {
-            var type = (await _pokemonBusinessLayer.GetType(typeName));
+            var type = await _pokemonBusinessLayer.GetType(typeName);
 
             var embedFieldBuilders = new List<EmbedFieldBuilder>
             {
