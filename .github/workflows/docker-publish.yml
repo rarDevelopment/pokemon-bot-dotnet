@@ -66,5 +66,5 @@ jobs:
             docker stop $(docker ps -q -f "name=${{ env.IMAGE_NAME }}") || echo "No container to stop"
             docker container rm -f ${{ env.IMAGE_NAME }} || echo "No container to rm"
             docker pull "${{ env.CURRENT_ID }}:latest"
-            docker run -d --name=${{ env.IMAGE_NAME }} --env Discord__BotToken=${{ secrets.BOT_TOKEN }} --env PokemonTcg__ApiKey=${{secrets.POKEMON_TCG_API_KEY}} --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 --restart=unless-stopped ${{ env.CURRENT_ID }}:latest
+            docker run -d --name=${{ env.IMAGE_NAME }} --env Discord__BotToken=${{ secrets.BOT_TOKEN }} --env PokemonTcg__ApiKey=${{ secrets.POKEMON_TCG_API_KEY }} --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 --restart=unless-stopped ${{ env.CURRENT_ID }}:latest
             exit
