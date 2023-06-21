@@ -13,7 +13,8 @@ public class PokemonTcgBusinessLayer : IPokemonTcgBusinessLayer
         _pokemonTcgServiceLayer = pokemonTcgServiceLayer;
     }
 
-    public async Task<PokemonCardDetail> GetPokemonCard(string? cardName = null, string? setName = null, string? cardNumber = null)
+    public async Task<List<PokemonCardDetail>> GetPokemonCards(string? cardName = null, string? setName = null,
+        string? cardNumber = null)
     {
         var cards = await _pokemonTcgServiceLayer.GetPokemonCard(cardName, setName, cardNumber);
         if (cards.Results.Count == 0)
@@ -21,13 +22,11 @@ public class PokemonTcgBusinessLayer : IPokemonTcgBusinessLayer
             throw new PokemonCardNotFoundException(cardName, setName, cardNumber);
         }
 
-        var card = cards.Results[0];
-
-        return new PokemonCardDetail
+        return cards.Results.OrderBy(card => card.Number).Select(card => new PokemonCardDetail
         {
             Name = card.Name,
             ImageUrl = card.Images.Large.ToString()
-        };
+        }).ToList();
     }
 
     public async Task<IReadOnlyList<string>> GetSets()

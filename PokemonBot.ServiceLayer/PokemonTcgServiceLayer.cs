@@ -34,7 +34,7 @@ public class PokemonTcgServiceLayer : IPokemonTcgServiceLayer
             filter.Add("number", cardNumber);
         }
 
-        return await _client.GetApiResourceAsync<PokemonCard>(filter);
+        return await _client.GetApiResourceAsync<PokemonCard>(take: 10, skip: 1, filter);
     }
 
     public async Task<IReadOnlyList<string>> GetSets()

@@ -23,7 +23,7 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
         _logger = logger;
     }
 
-    [SlashCommand("tcg-card", "Get a Pokémon Card by specifying its id.")]
+    [SlashCommand("tcg-card", "Get a Pokémon Card with search criteria.")]
     public async Task GetCard(
         [Summary("card_name", "The name of the card you want to see.")] string? cardName = null,
         [Summary("set_name", "The name of the set that contains the card(s) you're looking for.")] string? setName = null,
@@ -33,13 +33,16 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
 
         try
         {
-            var card = await _pokemonTcgBusinessLayer.GetPokemonCard(cardName, setName, cardNumber);
+            var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(cardName, setName, cardNumber);
 
-            await FollowupAsync(embed: _discordFormatter.BuildRegularEmbed(
-                card.Name,
-                "",
-                Context.User,
-                imageUrl: card.ImageUrl));
+            var buttonBuilder = new ComponentBuilder();
+
+            if (cards.Count > 1)
+            {
+                buttonBuilder.WithButton("Next", $"currentIndexNext:{0}", emote: new Emoji("➡️"));
+            }
+
+            await FollowupAsync(embed: GetCardEmbed(cards, 0), components: buttonBuilder.Build());
         }
         catch (PokemonCardNotFoundException ex)
         {
@@ -55,5 +58,73 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
                 "There was an unhandled error. Please try again.",
                 Context.User, imageUrl: _botSettings.GhostUrl));
         }
+    }
+
+    private Embed GetCardEmbed(IReadOnlyList<PokemonCardDetail> cards, int index)
+    {
+        var card = cards[index];
+        return _discordFormatter.BuildRegularEmbed(
+            card.Name,
+            $"{index + 1}/{cards.Count}",
+            Context.User,
+            imageUrl: card.ImageUrl);
+    }
+
+    [ComponentInteraction("currentIndexNext:*")]
+    public async Task NextButton(int currentIndex)
+    {
+        await DeferAsync();
+
+        // TODO: figure out how to load this data in again (or paginate it without doing so if possible)
+        var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(null, "base", null);
+
+        var newIndex = currentIndex + 1;
+
+        var buttonBuilder = new ComponentBuilder();
+
+        if (currentIndex >= 0)
+        {
+            buttonBuilder.WithButton("Previous", $"currentIndexPrev:{newIndex}", emote: new Emoji("⬅️"));
+        }
+
+        if (newIndex + 1 < cards.Count)
+        {
+            buttonBuilder.WithButton("Next", $"currentIndexNext:{newIndex}", emote: new Emoji("➡️"));
+        }
+
+        await Context.Interaction.ModifyOriginalResponseAsync(properties =>
+        {
+            properties.Embed = GetCardEmbed(cards, newIndex);
+            properties.Components = buttonBuilder.Build();
+        });
+    }
+
+    [ComponentInteraction("currentIndexPrev:*")]
+    public async Task PreviousButton(int currentIndex)
+    {
+        await DeferAsync();
+
+        // TODO: figure out how to load this data in again (or paginate it without doing so if possible)
+        var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(null, "base", null);
+
+        var buttonBuilder = new ComponentBuilder();
+
+        var newIndex = currentIndex - 1;
+
+        if (newIndex - 1 >= 0)
+        {
+            buttonBuilder.WithButton("Previous", $"currentIndexPrev:{newIndex}", emote: new Emoji("⬅️"));
+        }
+
+        if (currentIndex < cards.Count)
+        {
+            buttonBuilder.WithButton("Next", $"currentIndexNext:{newIndex}", emote: new Emoji("➡️"));
+        }
+
+        await Context.Interaction.ModifyOriginalResponseAsync(properties =>
+        {
+            properties.Embed = GetCardEmbed(cards, newIndex);
+            properties.Components = buttonBuilder.Build();
+        });
     }
 }
