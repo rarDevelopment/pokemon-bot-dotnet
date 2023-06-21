@@ -2,9 +2,17 @@
 
 public class PokemonCardNotFoundException : Exception
 {
-    public string CardId { get; }
-    public PokemonCardNotFoundException(string cardId) : base($"No card found with the identifier {cardId}")
+    public string? CardName { get; }
+    public string? SetName { get; }
+    public string? CardNumber { get; }
+
+    public PokemonCardNotFoundException(string? cardName = null,
+        string? setName = null,
+        string? cardNumber = null) : base(
+        $"No card found using criteria: cardName={cardName ?? "(not specified)"} setName={setName ?? "(not specified)"} cardNumber={cardNumber ?? "(not specified)"}")
     {
-        CardId = cardId;
+        CardName = cardName;
+        SetName = setName;
+        CardNumber = cardNumber;
     }
 }
