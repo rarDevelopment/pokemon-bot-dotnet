@@ -9,10 +9,12 @@ namespace PokemonBot.ServiceLayer;
 
 public class PokemonTcgServiceLayer : IPokemonTcgServiceLayer
 {
+    private readonly PokemonTcgSettings _pokemonTcgSettings;
     private readonly PokemonApiClient _client;
 
     public PokemonTcgServiceLayer(PokemonTcgSettings pokemonTcgSettings)
     {
+        _pokemonTcgSettings = pokemonTcgSettings;
         _client = new PokemonApiClient(pokemonTcgSettings.ApiKey);
     }
 
@@ -34,7 +36,7 @@ public class PokemonTcgServiceLayer : IPokemonTcgServiceLayer
             filter.Add("number", cardNumber);
         }
 
-        return await _client.GetApiResourceAsync<PokemonCard>(take: 10, skip: 1, filter);
+        return await _client.GetApiResourceAsync<PokemonCard>(take: _pokemonTcgSettings.CardLimit, skip: 1, filter);
     }
 
     public async Task<IReadOnlyList<string>> GetSets()

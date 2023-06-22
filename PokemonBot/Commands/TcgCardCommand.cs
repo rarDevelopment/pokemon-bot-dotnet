@@ -7,6 +7,7 @@ namespace PokemonBot.Commands;
 
 public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
 {
+    private const string EmptyStringValue = "{{NONE}}";
     private readonly IPokemonTcgBusinessLayer _pokemonTcgBusinessLayer;
     private readonly IDiscordFormatter _discordFormatter;
     private readonly BotSettings _botSettings;
@@ -33,13 +34,13 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
 
         try
         {
-            var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(cardName, setName, cardNumber);
+            var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(GetStringOrNull(cardName), GetStringOrNull(setName), GetStringOrNull(cardNumber));
 
             var buttonBuilder = new ComponentBuilder();
 
             if (cards.Count > 1)
             {
-                buttonBuilder.WithButton("Next", $"currentIndexNext:{0}", emote: new Emoji("➡️"));
+                buttonBuilder.WithButton("Next", $"currentIndexNext:{0}_{GetStringOrEmptyValue(cardName)}_{GetStringOrEmptyValue(setName)}_{GetStringOrEmptyValue(cardNumber)}", emote: new Emoji("➡️"));
             }
 
             await FollowupAsync(embed: GetCardEmbed(cards, 0), components: buttonBuilder.Build());
@@ -70,13 +71,13 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
             imageUrl: card.ImageUrl);
     }
 
-    [ComponentInteraction("currentIndexNext:*")]
-    public async Task NextButton(int currentIndex)
+    [ComponentInteraction("currentIndexNext:*_*_*_*")]
+    public async Task NextButton(int currentIndex, string cardName, string setName, string cardNumber)
     {
         await DeferAsync();
 
         // TODO: figure out how to load this data in again (or paginate it without doing so if possible)
-        var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(null, "base", null);
+        var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(GetStringOrNull(cardName), GetStringOrNull(setName), GetStringOrNull(cardNumber));
 
         var newIndex = currentIndex + 1;
 
@@ -84,12 +85,12 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
 
         if (currentIndex >= 0)
         {
-            buttonBuilder.WithButton("Previous", $"currentIndexPrev:{newIndex}", emote: new Emoji("⬅️"));
+            buttonBuilder.WithButton("Previous", $"currentIndexPrev:{newIndex}_{GetStringOrEmptyValue(cardName)}_{GetStringOrEmptyValue(setName)}_{GetStringOrEmptyValue(cardNumber)}", emote: new Emoji("⬅️"));
         }
 
         if (newIndex + 1 < cards.Count)
         {
-            buttonBuilder.WithButton("Next", $"currentIndexNext:{newIndex}", emote: new Emoji("➡️"));
+            buttonBuilder.WithButton("Next", $"currentIndexNext:{newIndex}_{GetStringOrEmptyValue(cardName)}_{GetStringOrEmptyValue(setName)}_{GetStringOrEmptyValue(cardNumber)}", emote: new Emoji("➡️"));
         }
 
         await Context.Interaction.ModifyOriginalResponseAsync(properties =>
@@ -99,13 +100,13 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
         });
     }
 
-    [ComponentInteraction("currentIndexPrev:*")]
-    public async Task PreviousButton(int currentIndex)
+    [ComponentInteraction("currentIndexPrev:*_*_*_*")]
+    public async Task PreviousButton(int currentIndex, string cardName, string setName, string cardNumber)
     {
         await DeferAsync();
 
         // TODO: figure out how to load this data in again (or paginate it without doing so if possible)
-        var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(null, "base", null);
+        var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(GetStringOrNull(cardName), GetStringOrNull(setName), GetStringOrNull(cardNumber));
 
         var buttonBuilder = new ComponentBuilder();
 
@@ -113,12 +114,12 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
 
         if (newIndex - 1 >= 0)
         {
-            buttonBuilder.WithButton("Previous", $"currentIndexPrev:{newIndex}", emote: new Emoji("⬅️"));
+            buttonBuilder.WithButton("Previous", $"currentIndexPrev:{newIndex}_{GetStringOrEmptyValue(cardName)}_{GetStringOrEmptyValue(setName)}_{GetStringOrEmptyValue(cardNumber)}", emote: new Emoji("⬅️"));
         }
 
         if (currentIndex < cards.Count)
         {
-            buttonBuilder.WithButton("Next", $"currentIndexNext:{newIndex}", emote: new Emoji("➡️"));
+            buttonBuilder.WithButton("Next", $"currentIndexNext:{newIndex}_{GetStringOrEmptyValue(cardName)}_{GetStringOrEmptyValue(setName)}_{GetStringOrEmptyValue(cardNumber)}", emote: new Emoji("➡️"));
         }
 
         await Context.Interaction.ModifyOriginalResponseAsync(properties =>
@@ -126,5 +127,15 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
             properties.Embed = GetCardEmbed(cards, newIndex);
             properties.Components = buttonBuilder.Build();
         });
+    }
+
+    public string GetStringOrEmptyValue(string? s = null)
+    {
+        return s ?? EmptyStringValue;
+    }
+
+    public string? GetStringOrNull(string s)
+    {
+        return s == EmptyStringValue ? null : s;
     }
 }
