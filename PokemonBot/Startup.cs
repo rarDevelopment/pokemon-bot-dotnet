@@ -46,7 +46,7 @@ builder.ConfigureServices((host, services) =>
     var versionSettings = new VersionSettings(host.Configuration["Version:VersionNumber"]!);
     var botSettings = new BotSettings(host.Configuration["Bot:MissingnoImageUrl"]!, host.Configuration["Bot:GhostUrl"]!,
     host.Configuration["Bot:HelpImage"]!, Convert.ToInt32(host.Configuration["Bot:TotalPokemon"]!));
-    var pokemonTcgSettings = new PokemonTcgSettings(host.Configuration["PokemonTcg:ApiKey"]!);
+    var pokemonTcgSettings = new PokemonTcgSettings(host.Configuration["PokemonTcg:ApiKey"]!, Convert.ToInt32(host.Configuration["PokemonTcg:CardLimit"]!));
 
     services.AddSingleton(discordSettings);
     services.AddSingleton(versionSettings);
