@@ -117,27 +117,27 @@ public class PokemonCommand : InteractionModuleBase<SocketInteractionContext>
         }
         catch (PokemonNotFoundException ex)
         {
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Pokémon Not Found",
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Pokémon Not Found",
                 $"No Pokémon was found with the identifier {ex.Identifier}",
                 Context.User, imageUrl: _botSettings.MissingnoImageUrl));
         }
         catch (NoTypesFoundException ex)
         {
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Types Not Found",
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Types Not Found",
                 $"The types were not found for the Pokémon {ex.PokemonSearched.Name} with identifier {ex.Identifier}",
                 Context.User, imageUrl: _botSettings.MissingnoImageUrl));
         }
         catch (GenerationNotFoundException ex)
         {
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Generation Not Found",
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Generation Not Found",
                 $"No generation was found with the identifier {ex.Identifier}",
                 Context.User, imageUrl: _botSettings.MissingnoImageUrl));
         }
         catch (Exception ex)
         {
             _logger.Log(LogLevel.Error, $"Pokémon Command Failed: {ex.Message}", ex);
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Error",
-                $"There was an unhandled error. Please try again.",
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Error",
+                "There was an unhandled error. Please try again.",
                 Context.User, imageUrl: _botSettings.GhostUrl));
         }
     }

@@ -73,7 +73,7 @@ public class TypeCommand : InteractionModuleBase<SocketInteractionContext>
                 },
             };
 
-            await FollowupAsync(embed: _discordFormatter.BuildRegularEmbed(
+            await FollowupAsync(embed: _discordFormatter.BuildRegularEmbedWithUserFooter(
                 type.Name.ToTitleCase(),
                 "",
                 Context.User,
@@ -81,14 +81,14 @@ public class TypeCommand : InteractionModuleBase<SocketInteractionContext>
         }
         catch (TypeNotFoundException ex)
         {
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Type Not Found",
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Type Not Found",
                 $"No Type was found with the identifier {ex.TypeName}",
                 Context.User, imageUrl: _botSettings.MissingnoImageUrl));
         }
         catch (Exception ex)
         {
             _logger.Log(LogLevel.Error, $"Type Command Failed: {ex.Message}", ex);
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Error",
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Error",
                 $"There was an unhandled error. Please try again.",
                 Context.User, imageUrl: _botSettings.GhostUrl));
         }
