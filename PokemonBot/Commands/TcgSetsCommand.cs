@@ -32,7 +32,7 @@ public class TcgSetsCommand : InteractionModuleBase<SocketInteractionContext>
             var sets = await _pokemonTcgBusinessLayer.GetSets();
             var setsToDisplay = string.Join("\n", sets);
 
-            await FollowupAsync(embed: _discordFormatter.BuildRegularEmbed(
+            await FollowupAsync(embed: _discordFormatter.BuildRegularEmbedWithUserFooter(
                 "Sets",
                 setsToDisplay,
                 Context.User));
@@ -40,7 +40,7 @@ public class TcgSetsCommand : InteractionModuleBase<SocketInteractionContext>
         catch (Exception ex)
         {
             _logger.Log(LogLevel.Error, $"Sets Command Failed: {ex.Message}");
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Error",
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Error",
                 "There was an unhandled error. Please try again.",
                 Context.User, imageUrl: _botSettings.GhostUrl));
         }

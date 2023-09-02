@@ -48,14 +48,14 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
         catch (PokemonCardNotFoundException ex)
         {
             _logger.Log(LogLevel.Information, $"Card Not Found: {ex.Message}");
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Card Not Found",
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Card Not Found",
                 "No Card was found with that criteria. Please try again.",
                 Context.User, imageUrl: _botSettings.MissingnoImageUrl));
         }
         catch (Exception ex)
         {
             _logger.Log(LogLevel.Error, $"Card Command Failed: {ex.Message}");
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbed("Error",
+            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Error",
                 "There was an unhandled error. Please try again.",
                 Context.User, imageUrl: _botSettings.GhostUrl));
         }
@@ -64,7 +64,7 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
     private Embed GetCardEmbed(IReadOnlyList<PokemonCardDetail> cards, int index)
     {
         var card = cards[index];
-        return _discordFormatter.BuildRegularEmbed(
+        return _discordFormatter.BuildRegularEmbedWithUserFooter(
             card.Name,
             $"{index + 1}/{cards.Count}",
             Context.User,
@@ -129,12 +129,12 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
         });
     }
 
-    public string GetStringOrEmptyValue(string? s = null)
+    public static string GetStringOrEmptyValue(string? s = null)
     {
         return s ?? EmptyStringValue;
     }
 
-    public string? GetStringOrNull(string s)
+    public static string? GetStringOrNull(string s)
     {
         return s == EmptyStringValue ? null : s;
     }
