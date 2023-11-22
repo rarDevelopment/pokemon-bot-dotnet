@@ -1,13 +1,7 @@
 ﻿namespace PokemonBot.Models;
 
-public class PokemonTcgSettings
+public class PokemonTcgSettings(string apiKey, int cardLimit)
 {
-    public PokemonTcgSettings(string apiKey, int cardLimit)
-    {
-        CardLimit = cardLimit;
-        ApiKey = apiKey;
-    }
-
-    public string ApiKey { get; set; }
-    public int CardLimit { get; set; }
+    public string ApiKey { get; set; } = apiKey;
+    public int CardLimit { get; set; } = cardLimit;
 }

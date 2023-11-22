@@ -1,11 +1,6 @@
 ﻿namespace PokemonBot.BusinessLayer.Exceptions;
 
-public class GenerationNotFoundException : Exception
+public class GenerationNotFoundException(string identifier) : Exception($"Generation not found with identifier {identifier}")
 {
-    public GenerationNotFoundException(string identifier) : base($"Generation not found with identifier {identifier}")
-    {
-        Identifier = identifier;
-    }
-
-    public string Identifier { get; }
+    public string Identifier { get; } = identifier;
 }

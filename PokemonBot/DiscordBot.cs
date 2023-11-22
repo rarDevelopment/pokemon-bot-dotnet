@@ -3,46 +3,34 @@ using PokemonBot.Models;
 
 namespace PokemonBot;
 
-public class DiscordBot : BackgroundService
-{
-    private readonly DiscordSocketClient _client;
-    private readonly InteractionService _interactions;
-    private readonly ILogger _logger;
-    private readonly InteractionHandler _interactionHandler;
-    private readonly DiscordSettings _discordSettings;
-
-    public DiscordBot(DiscordSocketClient client,
+public class DiscordBot(DiscordSocketClient client,
         InteractionService interactions,
         ILogger<DiscordBot> logger,
         InteractionHandler interactionHandler,
         DiscordSettings discordSettings)
-    {
-        _client = client;
-        _interactions = interactions;
-        _logger = logger;
-        _interactionHandler = interactionHandler;
-        _discordSettings = discordSettings;
-    }
+    : BackgroundService
+{
+    private readonly ILogger _logger = logger;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _client.Ready += ClientReady;
+        client.Ready += ClientReady;
 
-        _client.Log += LogAsync;
-        _interactions.Log += LogAsync;
+        client.Log += LogAsync;
+        interactions.Log += LogAsync;
 
-        await _interactionHandler.InitializeAsync();
+        await interactionHandler.InitializeAsync();
 
-        await _client.LoginAsync(TokenType.Bot, _discordSettings.BotToken);
+        await client.LoginAsync(TokenType.Bot, discordSettings.BotToken);
 
-        await _client.StartAsync();
+        await client.StartAsync();
     }
 
     private async Task ClientReady()
     {
-        _logger.LogInformation($"Logged as {_client.CurrentUser}");
+        _logger.LogInformation($"Logged as {client.CurrentUser}");
 
-        await _interactions.RegisterCommandsGloballyAsync();
+        await interactions.RegisterCommandsGloballyAsync();
     }
 
     public async Task LogAsync(LogMessage msg)

@@ -5,24 +5,12 @@ using PokemonBot.Models;
 
 namespace PokemonBot.Commands;
 
-public class PokemonCommand : InteractionModuleBase<SocketInteractionContext>
-{
-    private readonly IPokemonBusinessLayer _pokemonBusinessLayer;
-    private readonly IDiscordFormatter _discordFormatter;
-    private readonly BotSettings _botSettings;
-    private readonly ILogger<DiscordBot> _logger;
-
-    public PokemonCommand(IPokemonBusinessLayer pokemonBusinessLayer,
+public class PokemonCommand(IPokemonBusinessLayer pokemonBusinessLayer,
         IDiscordFormatter discordFormatter,
         BotSettings botSettings,
         ILogger<DiscordBot> logger)
-    {
-        _pokemonBusinessLayer = pokemonBusinessLayer;
-        _discordFormatter = discordFormatter;
-        _botSettings = botSettings;
-        _logger = logger;
-    }
-
+    : InteractionModuleBase<SocketInteractionContext>
+{
     [SlashCommand("pokemon", "Get a Pokémon by specifying their number, name, or neither to get a random Pokémon.")]
     public async Task Pokemon(
         [Summary("name_or_number", "The Pokémon name or ID that you're searching for.")] string? nameOrNumber = "")
@@ -33,10 +21,10 @@ public class PokemonCommand : InteractionModuleBase<SocketInteractionContext>
         {
             if (string.IsNullOrEmpty(nameOrNumber))
             {
-                nameOrNumber = new Random().Next(1, _botSettings.TotalPokemon).ToString();
+                nameOrNumber = new Random().Next(1, botSettings.TotalPokemon).ToString();
             }
 
-            var pokemon = (await _pokemonBusinessLayer.GetPokemon(nameOrNumber))!;
+            var pokemon = (await pokemonBusinessLayer.GetPokemon(nameOrNumber))!;
             var pokedexEntryVersion = pokemon.FlavorTextVersion != null
                 ? $"({pokemon.FlavorTextVersion.CleanVersionName()})"
                 : "";
@@ -108,7 +96,7 @@ public class PokemonCommand : InteractionModuleBase<SocketInteractionContext>
                 embedFooterBuilder.WithIconUrl(pokemon.FrontSprite);
             }
 
-            await FollowupAsync(embed: _discordFormatter.BuildRegularEmbed(
+            await FollowupAsync(embed: discordFormatter.BuildRegularEmbed(
                 pokemon.Name.CleanGeneralName(),
                 "",
                 embedFooterBuilder,
@@ -117,28 +105,28 @@ public class PokemonCommand : InteractionModuleBase<SocketInteractionContext>
         }
         catch (PokemonNotFoundException ex)
         {
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Pokémon Not Found",
+            await FollowupAsync(embed: discordFormatter.BuildErrorEmbedWithUserFooter("Pokémon Not Found",
                 $"No Pokémon was found with the identifier {ex.Identifier}",
-                Context.User, imageUrl: _botSettings.MissingnoImageUrl));
+                Context.User, imageUrl: botSettings.MissingnoImageUrl));
         }
         catch (NoTypesFoundException ex)
         {
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Types Not Found",
+            await FollowupAsync(embed: discordFormatter.BuildErrorEmbedWithUserFooter("Types Not Found",
                 $"The types were not found for the Pokémon {ex.PokemonSearched.Name} with identifier {ex.Identifier}",
-                Context.User, imageUrl: _botSettings.MissingnoImageUrl));
+                Context.User, imageUrl: botSettings.MissingnoImageUrl));
         }
         catch (GenerationNotFoundException ex)
         {
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Generation Not Found",
+            await FollowupAsync(embed: discordFormatter.BuildErrorEmbedWithUserFooter("Generation Not Found",
                 $"No generation was found with the identifier {ex.Identifier}",
-                Context.User, imageUrl: _botSettings.MissingnoImageUrl));
+                Context.User, imageUrl: botSettings.MissingnoImageUrl));
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, $"Pokémon Command Failed: {ex.Message}", ex);
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Error",
+            logger.Log(LogLevel.Error, $"Pokémon Command Failed: {ex.Message}", ex);
+            await FollowupAsync(embed: discordFormatter.BuildErrorEmbedWithUserFooter("Error",
                 "There was an unhandled error. Please try again.",
-                Context.User, imageUrl: _botSettings.GhostUrl));
+                Context.User, imageUrl: botSettings.GhostUrl));
         }
     }
 }

@@ -5,24 +5,13 @@ using PokemonBot.Models;
 
 namespace PokemonBot.Commands;
 
-public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
-{
-    private const string EmptyStringValue = "{{NONE}}";
-    private readonly IPokemonTcgBusinessLayer _pokemonTcgBusinessLayer;
-    private readonly IDiscordFormatter _discordFormatter;
-    private readonly BotSettings _botSettings;
-    private readonly ILogger<DiscordBot> _logger;
-
-    public TcgCardCommand(IPokemonTcgBusinessLayer pokemonTcgBusinessLayer,
+public class TcgCardCommand(IPokemonTcgBusinessLayer pokemonTcgBusinessLayer,
         IDiscordFormatter discordFormatter,
         BotSettings botSettings,
         ILogger<DiscordBot> logger)
-    {
-        _pokemonTcgBusinessLayer = pokemonTcgBusinessLayer;
-        _discordFormatter = discordFormatter;
-        _botSettings = botSettings;
-        _logger = logger;
-    }
+    : InteractionModuleBase<SocketInteractionContext>
+{
+    private const string EmptyStringValue = "{{NONE}}";
 
     [SlashCommand("tcg-card", "Get a Pokémon Card with search criteria.")]
     public async Task GetCard(
@@ -34,7 +23,7 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
 
         try
         {
-            var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(GetStringOrNull(cardName), GetStringOrNull(setName), GetStringOrNull(cardNumber));
+            var cards = await pokemonTcgBusinessLayer.GetPokemonCards(GetStringOrNull(cardName), GetStringOrNull(setName), GetStringOrNull(cardNumber));
 
             var buttonBuilder = new ComponentBuilder();
 
@@ -47,24 +36,24 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
         }
         catch (PokemonCardNotFoundException ex)
         {
-            _logger.Log(LogLevel.Information, $"Card Not Found: {ex.Message}");
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Card Not Found",
+            logger.Log(LogLevel.Information, $"Card Not Found: {ex.Message}");
+            await FollowupAsync(embed: discordFormatter.BuildErrorEmbedWithUserFooter("Card Not Found",
                 "No Card was found with that criteria. Please try again.",
-                Context.User, imageUrl: _botSettings.MissingnoImageUrl));
+                Context.User, imageUrl: botSettings.MissingnoImageUrl));
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, $"Card Command Failed: {ex.Message}");
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Error",
+            logger.Log(LogLevel.Error, $"Card Command Failed: {ex.Message}");
+            await FollowupAsync(embed: discordFormatter.BuildErrorEmbedWithUserFooter("Error",
                 "There was an unhandled error. Please try again.",
-                Context.User, imageUrl: _botSettings.GhostUrl));
+                Context.User, imageUrl: botSettings.GhostUrl));
         }
     }
 
     private Embed GetCardEmbed(IReadOnlyList<PokemonCardDetail> cards, int index)
     {
         var card = cards[index];
-        return _discordFormatter.BuildRegularEmbedWithUserFooter(
+        return discordFormatter.BuildRegularEmbedWithUserFooter(
             card.Name,
             $"{index + 1}/{cards.Count}",
             Context.User,
@@ -77,7 +66,7 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
         await DeferAsync();
 
         // TODO: figure out how to load this data in again (or paginate it without doing so if possible)
-        var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(GetStringOrNull(cardName), GetStringOrNull(setName), GetStringOrNull(cardNumber));
+        var cards = await pokemonTcgBusinessLayer.GetPokemonCards(GetStringOrNull(cardName), GetStringOrNull(setName), GetStringOrNull(cardNumber));
 
         var newIndex = currentIndex + 1;
 
@@ -106,7 +95,7 @@ public class TcgCardCommand : InteractionModuleBase<SocketInteractionContext>
         await DeferAsync();
 
         // TODO: figure out how to load this data in again (or paginate it without doing so if possible)
-        var cards = await _pokemonTcgBusinessLayer.GetPokemonCards(GetStringOrNull(cardName), GetStringOrNull(setName), GetStringOrNull(cardNumber));
+        var cards = await pokemonTcgBusinessLayer.GetPokemonCards(GetStringOrNull(cardName), GetStringOrNull(setName), GetStringOrNull(cardNumber));
 
         var buttonBuilder = new ComponentBuilder();
 

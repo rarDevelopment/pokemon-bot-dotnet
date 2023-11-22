@@ -1,8 +1,6 @@
 ﻿namespace PokemonBot.BusinessLayer.Exceptions;
 
-public class TypeNotFoundException : Exception
+public class TypeNotFoundException(string typeName) : Exception($"Type not found with name {typeName}")
 {
-    public TypeNotFoundException(string typeName) : base($"Type not found with name {typeName}") { TypeName = typeName; }
-
-    public string TypeName { get; }
+    public string TypeName { get; } = typeName;
 }

@@ -7,16 +7,9 @@ using PokemonTcgSdk.Standard.Infrastructure.HttpClients.Set;
 
 namespace PokemonBot.ServiceLayer;
 
-public class PokemonTcgServiceLayer : IPokemonTcgServiceLayer
+public class PokemonTcgServiceLayer(PokemonTcgSettings pokemonTcgSettings) : IPokemonTcgServiceLayer
 {
-    private readonly PokemonTcgSettings _pokemonTcgSettings;
-    private readonly PokemonApiClient _client;
-
-    public PokemonTcgServiceLayer(PokemonTcgSettings pokemonTcgSettings)
-    {
-        _pokemonTcgSettings = pokemonTcgSettings;
-        _client = new PokemonApiClient(pokemonTcgSettings.ApiKey);
-    }
+    private readonly PokemonApiClient _client = new PokemonApiClient(pokemonTcgSettings.ApiKey);
 
     public async Task<ApiResourceList<PokemonCard>> GetPokemonCard(string? cardName = null, string? setName = null, string? cardNumber = null)
     {
@@ -36,7 +29,7 @@ public class PokemonTcgServiceLayer : IPokemonTcgServiceLayer
             filter.Add("number", cardNumber);
         }
 
-        return await _client.GetApiResourceAsync<PokemonCard>(take: _pokemonTcgSettings.CardLimit, skip: 1, filter);
+        return await _client.GetApiResourceAsync<PokemonCard>(take: pokemonTcgSettings.CardLimit, skip: 1, filter);
     }
 
     public async Task<IReadOnlyList<string>> GetSets()

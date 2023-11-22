@@ -7,14 +7,8 @@ namespace PokemonBot.ServiceLayer;
 
 public class PokeApiServiceLayer : IPokeApiServiceLayer
 {
-    private readonly PokeApiClient _pokeApiClient;
-    private readonly Logger<PokeApiServiceLayer> _logger;
-
-    public PokeApiServiceLayer()
-    {
-        _pokeApiClient = new PokeApiClient();
-        _logger = new Logger<PokeApiServiceLayer>(new NullLoggerFactory());
-    }
+    private readonly PokeApiClient _pokeApiClient = new();
+    private readonly Logger<PokeApiServiceLayer> _logger = new(new NullLoggerFactory());
 
     public async Task<Pokemon?> GetPokemon(string identifier)
     {
