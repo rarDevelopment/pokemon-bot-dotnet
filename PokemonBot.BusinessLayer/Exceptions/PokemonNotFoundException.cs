@@ -1,11 +1,6 @@
 ﻿namespace PokemonBot.BusinessLayer.Exceptions;
 
-public class PokemonNotFoundException : Exception
+public class PokemonNotFoundException(string identifier) : Exception($"Pokémon not found with identifier {identifier}")
 {
-    public PokemonNotFoundException(string identifier) : base($"Pokémon not found with identifier {identifier}")
-    {
-        Identifier = identifier;
-    }
-
-    public string Identifier { get; }
+    public string Identifier { get; } = identifier;
 }

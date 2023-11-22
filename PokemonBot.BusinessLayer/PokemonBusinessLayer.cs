@@ -6,20 +6,15 @@ using Type = PokeApiNet.Type;
 
 namespace PokemonBot.BusinessLayer;
 
-public class PokemonBusinessLayer : IPokemonBusinessLayer
+public class PokemonBusinessLayer(IPokeApiServiceLayer pokeApiServiceLayer) : IPokemonBusinessLayer
 {
     private const string Language = "en";
-    private readonly IPokeApiServiceLayer _pokeApiServiceLayer;
-    public PokemonBusinessLayer(IPokeApiServiceLayer pokeApiServiceLayer)
-    {
-        _pokeApiServiceLayer = pokeApiServiceLayer;
-    }
 
     public async Task<PokemonDetail?> GetPokemon(string identifier)
     {
         var identifierFixed = FixSpecialCases(identifier);
-        var pokemon = await _pokeApiServiceLayer.GetPokemon(identifierFixed);
-        var species = await _pokeApiServiceLayer.GetPokemonSpecies(identifierFixed);
+        var pokemon = await pokeApiServiceLayer.GetPokemon(identifierFixed);
+        var species = await pokeApiServiceLayer.GetPokemonSpecies(identifierFixed);
         if (pokemon == null || species == null)
         {
             throw new PokemonNotFoundException(identifier);
@@ -32,7 +27,7 @@ public class PokemonBusinessLayer : IPokemonBusinessLayer
             throw new NoTypesFoundException(identifier, pokemon);
         }
 
-        var generation = await _pokeApiServiceLayer.GetGeneration(species.Generation.Name);
+        var generation = await pokeApiServiceLayer.GetGeneration(species.Generation.Name);
 
         if (generation == null)
         {
@@ -76,7 +71,7 @@ public class PokemonBusinessLayer : IPokemonBusinessLayer
 
     public async Task<TypeDetail> GetType(string typeName)
     {
-        var type = await _pokeApiServiceLayer.GetType(typeName);
+        var type = await pokeApiServiceLayer.GetType(typeName);
         if (type == null)
         {
             throw new TypeNotFoundException(typeName);
@@ -99,7 +94,7 @@ public class PokemonBusinessLayer : IPokemonBusinessLayer
         var types = new List<Type>();
         foreach (var pokemonType in pokemon.Types)
         {
-            var type = await _pokeApiServiceLayer.GetType(pokemonType.Type.Name);
+            var type = await pokeApiServiceLayer.GetType(pokemonType.Type.Name);
             if (type != null)
             {
                 types.Add(type);

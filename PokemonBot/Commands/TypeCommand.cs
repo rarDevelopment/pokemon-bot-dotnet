@@ -5,24 +5,12 @@ using PokemonBot.Models;
 
 namespace PokemonBot.Commands;
 
-public class TypeCommand : InteractionModuleBase<SocketInteractionContext>
-{
-    private readonly IPokemonBusinessLayer _pokemonBusinessLayer;
-    private readonly IDiscordFormatter _discordFormatter;
-    private readonly BotSettings _botSettings;
-    private readonly ILogger<DiscordBot> _logger;
-
-    public TypeCommand(IPokemonBusinessLayer pokemonBusinessLayer,
+public class TypeCommand(IPokemonBusinessLayer pokemonBusinessLayer,
         IDiscordFormatter discordFormatter,
         BotSettings botSettings,
         ILogger<DiscordBot> logger)
-    {
-        _pokemonBusinessLayer = pokemonBusinessLayer;
-        _discordFormatter = discordFormatter;
-        _botSettings = botSettings;
-        _logger = logger;
-    }
-
+    : InteractionModuleBase<SocketInteractionContext>
+{
     [SlashCommand("type", "Get a Type by specifying its name.")]
     public async Task Type(
         [Summary("type_name", "The name of the type that you're searching for.")] string typeName)
@@ -31,7 +19,7 @@ public class TypeCommand : InteractionModuleBase<SocketInteractionContext>
 
         try
         {
-            var type = await _pokemonBusinessLayer.GetType(typeName);
+            var type = await pokemonBusinessLayer.GetType(typeName);
 
             var embedFieldBuilders = new List<EmbedFieldBuilder>
             {
@@ -73,7 +61,7 @@ public class TypeCommand : InteractionModuleBase<SocketInteractionContext>
                 },
             };
 
-            await FollowupAsync(embed: _discordFormatter.BuildRegularEmbedWithUserFooter(
+            await FollowupAsync(embed: discordFormatter.BuildRegularEmbedWithUserFooter(
                 type.Name.ToTitleCase(),
                 "",
                 Context.User,
@@ -81,16 +69,16 @@ public class TypeCommand : InteractionModuleBase<SocketInteractionContext>
         }
         catch (TypeNotFoundException ex)
         {
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Type Not Found",
+            await FollowupAsync(embed: discordFormatter.BuildErrorEmbedWithUserFooter("Type Not Found",
                 $"No Type was found with the identifier {ex.TypeName}",
-                Context.User, imageUrl: _botSettings.MissingnoImageUrl));
+                Context.User, imageUrl: botSettings.MissingnoImageUrl));
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, $"Type Command Failed: {ex.Message}", ex);
-            await FollowupAsync(embed: _discordFormatter.BuildErrorEmbedWithUserFooter("Error",
+            logger.Log(LogLevel.Error, $"Type Command Failed: {ex.Message}", ex);
+            await FollowupAsync(embed: discordFormatter.BuildErrorEmbedWithUserFooter("Error",
                 $"There was an unhandled error. Please try again.",
-                Context.User, imageUrl: _botSettings.GhostUrl));
+                Context.User, imageUrl: botSettings.GhostUrl));
         }
     }
 }

@@ -4,19 +4,12 @@ using PokemonBot.ServiceLayer;
 
 namespace PokemonBot.BusinessLayer;
 
-public class PokemonTcgBusinessLayer : IPokemonTcgBusinessLayer
+public class PokemonTcgBusinessLayer(IPokemonTcgServiceLayer pokemonTcgServiceLayer) : IPokemonTcgBusinessLayer
 {
-    private readonly IPokemonTcgServiceLayer _pokemonTcgServiceLayer;
-
-    public PokemonTcgBusinessLayer(IPokemonTcgServiceLayer pokemonTcgServiceLayer)
-    {
-        _pokemonTcgServiceLayer = pokemonTcgServiceLayer;
-    }
-
     public async Task<List<PokemonCardDetail>> GetPokemonCards(string? cardName = null, string? setName = null,
         string? cardNumber = null)
     {
-        var cards = await _pokemonTcgServiceLayer.GetPokemonCard(cardName, setName, cardNumber);
+        var cards = await pokemonTcgServiceLayer.GetPokemonCard(cardName, setName, cardNumber);
         if (cards.Results.Count == 0)
         {
             throw new PokemonCardNotFoundException(cardName, setName, cardNumber);
@@ -31,7 +24,7 @@ public class PokemonTcgBusinessLayer : IPokemonTcgBusinessLayer
 
     public async Task<IReadOnlyList<string>> GetSets()
     {
-        var sets = await _pokemonTcgServiceLayer.GetSets();
+        var sets = await pokemonTcgServiceLayer.GetSets();
         return sets;
     }
 }
