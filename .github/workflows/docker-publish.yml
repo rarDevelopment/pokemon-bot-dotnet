@@ -79,7 +79,7 @@ jobs:
       - name: Read VersionNumber from appsettings.json
         id: get_version
         run: |
-          APP_VERSION=$(jq -r '.Version.VersionNumber' Replybot/appsettings.json)
+          APP_VERSION=$(jq -r '.Version.VersionNumber' PokemonBot/appsettings.json)
           echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
       - name: Create Release
         run: |
