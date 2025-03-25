@@ -1,6 +1,6 @@
 ﻿namespace PokemonBot.Models;
 
-public class DiscordSettings(string botToken)
+public record DiscordSettings(string BotToken)
 {
-    public string BotToken { get; set; } = botToken;
+    public string BotToken { get; set; } = BotToken;
 }

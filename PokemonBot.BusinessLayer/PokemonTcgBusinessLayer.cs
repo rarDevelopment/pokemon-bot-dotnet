@@ -15,11 +15,8 @@ public class PokemonTcgBusinessLayer(IPokemonTcgServiceLayer pokemonTcgServiceLa
             throw new PokemonCardNotFoundException(cardName, setName, cardNumber);
         }
 
-        return cards.Results.OrderBy(card => card.Number).Select(card => new PokemonCardDetail
-        {
-            Name = card.Name,
-            ImageUrl = card.Images.Large.ToString()
-        }).ToList();
+        return cards.Results.OrderBy(card => card.Number).Select(card =>
+            new PokemonCardDetail(card.Name, card.Images.Large.ToString())).ToList();
     }
 
     public async Task<IReadOnlyList<string>> GetSets()

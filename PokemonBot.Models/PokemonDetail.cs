@@ -1,6 +1,6 @@
 ﻿namespace PokemonBot.Models;
 
-public class PokemonDetail
+public record PokemonDetail
 {
     public int Id { get; set; }
     public string Name { get; set; }
