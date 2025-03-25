@@ -77,16 +77,13 @@ public class PokemonBusinessLayer(IPokeApiServiceLayer pokeApiServiceLayer) : IP
             throw new TypeNotFoundException(typeName);
         }
 
-        return new TypeDetail
-        {
-            Name = type.Name,
-            DoubleDamageFrom = type.DamageRelations.DoubleDamageFrom.Select(t => t.Name),
-            HalfDamageFrom = type.DamageRelations.HalfDamageFrom.Select(t => t.Name),
-            NoDamageFrom = type.DamageRelations.NoDamageFrom.Select(t => t.Name),
-            DoubleDamageTo = type.DamageRelations.DoubleDamageTo.Select(t => t.Name),
-            HalfDamageTo = type.DamageRelations.HalfDamageTo.Select(t => t.Name),
-            NoDamageTo = type.DamageRelations.NoDamageTo.Select(t => t.Name),
-        };
+        return new TypeDetail(type.Name,
+            type.DamageRelations.DoubleDamageFrom.Select(t => t.Name),
+            type.DamageRelations.HalfDamageFrom.Select(t => t.Name),
+            type.DamageRelations.NoDamageFrom.Select(t => t.Name),
+            type.DamageRelations.DoubleDamageTo.Select(t => t.Name),
+            type.DamageRelations.HalfDamageTo.Select(t => t.Name),
+            type.DamageRelations.NoDamageTo.Select(t => t.Name));
     }
 
     private async Task<IReadOnlyList<Type>> GetTypes(Pokemon pokemon)

@@ -1,7 +1,7 @@
 ﻿namespace PokemonBot.Models;
 
-public class PokemonCardDetail
+public record PokemonCardDetail(string Name, string ImageUrl)
 {
-    public string Name { get; set; }
-    public string ImageUrl { get; set; }
+    public string Name { get; set; } = Name;
+    public string ImageUrl { get; set; } = ImageUrl;
 }

@@ -1,6 +1,6 @@
 ﻿namespace PokemonBot.Models;
 
-public class VersionSettings(string versionNumber)
+public record VersionSettings(string VersionNumber)
 {
-    public string VersionNumber { get; set; } = versionNumber;
+    public string VersionNumber { get; set; } = VersionNumber;
 }
