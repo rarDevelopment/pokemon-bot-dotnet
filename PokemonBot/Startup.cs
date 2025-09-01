@@ -63,8 +63,6 @@ builder.ConfigureServices((host, services) =>
 
     services.AddSingleton<InteractionHandler>();
 
-    services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DiscordBot).GetTypeInfo().Assembly));
-
     services.AddHostedService<DiscordBot>();
 });
 
