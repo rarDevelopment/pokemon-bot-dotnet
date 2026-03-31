@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="PokemonBot.BusinessLayer/PokemonBot.BusinessLayer.csproj" />
+  <Project Path="PokemonBot.Models/PokemonBot.Models.csproj" />
+  <Project Path="PokemonBot.ServiceLayer/PokemonBot.ServiceLayer.csproj" />
+  <Project Path="PokemonBot/PokemonBot.csproj" />
+</Solution>
